@@ -1,8 +1,10 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
-import Vue from 'vue'
-import App from './App'
-import router from './router'
+import Vue from 'vue';
+import App from './App';
+import api from '@/api/api';
+import router from '@/router';
+import store from '@/store';
 
 Vue.config.productionTip = false
 
@@ -10,6 +12,19 @@ Vue.config.productionTip = false
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
-  template: '<App/>'
+  template: '<App/>',
+  beforeMount () {
+    //在此中间件中添加身份认证所需 token。
+    api.interceptors.request.use(config => {
+      config.headers['Authorization'] = this.$store.getters.fufilledToken;
+      return config;
+    });
+
+    //在此中间件中对数据进行预处理，具体 res 结构请查询 axios 文档。
+    api.interceptors.response.use(res => {
+      return res.data;
+    });
+  }
 })
