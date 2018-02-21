@@ -22,7 +22,6 @@ const mutations = {
   setToken (state, { accessToken, tokenType }) {
     state.accessToken = accessToken;
     state.tokenType   = tokenType;
-
     sessionStorage.setItem('accessToken', state.accessToken);
     sessionStorage.setItem('tokenType', state.tokenType);
   },
