@@ -13,15 +13,6 @@ export default {
   },
 
   /**
-   * 通过失效的口令向后端请求新的口令
-   *
-   * @return {[Promise]}
-   */
-  refresh () {
-    return api.get('/token');
-  },
-
-  /**
    * 删除当前有效口令
    *
    * @return {[Promise]}

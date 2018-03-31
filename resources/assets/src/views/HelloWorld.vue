@@ -80,6 +80,10 @@
         </a>
       </li>
     </ul>
+    <h2>Basic Auth Demo</h2>
+    <ul>
+      <li><router-link to="/auth">Auth</router-link></li>
+    </ul>
   </div>
 </template>
 

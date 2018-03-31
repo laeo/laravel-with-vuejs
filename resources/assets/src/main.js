@@ -24,6 +24,13 @@ new Vue({
 
     //在此中间件中对数据进行预处理，具体 res 结构请查询 axios 文档。
     api.interceptors.response.use(res => {
+      if (res.headers.authorization !== undefined) {
+        this.$store.commit('setToken', {
+          accessToken: res.headers.authorization,
+          tokenType: 'Bearer'
+        });
+      }
+
       return res.data;
     });
   }
