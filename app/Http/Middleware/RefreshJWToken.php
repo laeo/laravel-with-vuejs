@@ -2,18 +2,15 @@
 
 namespace App\Http\Middleware;
 
+use Auth;
 use Closure;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Tymon\JWTAuth\Exceptions\JWTException;
+use Tymon\JWTAuth\Exceptions\TokenExpiredException;
+use Tymon\JWTAuth\Http\Middleware\BaseMiddleware;
 
-class RefreshJWToken
+class RefreshJWToken extends BaseMiddleware
 {
-    /**
-     * 标记是否需要执行刷新操作
-     *
-     * @var boolean
-     */
-    private $shouldRefresh = false;
-
     /**
      * Handle an incoming request.
      *
@@ -23,33 +20,28 @@ class RefreshJWToken
      */
     public function handle($request, Closure $next)
     {
-        //检查是否存在Token
+        //检查Token，不存在直接放行
+        if (false === $this->auth->parser()->setRequest($request)->hasToken()) {
+            return $next($request);
+        }
+
         try {
-            auth()->setRequest($request)->parseToken();
-
             //检查Token是否有效
-            if (false === auth()->check()) {
-                //Token无效所以对请求进行标记
-                $this->shouldRefresh = true;
+            if ($this->auth->parseToken()->authenticate()) {
+                return $next($request);
             }
+        } catch (TokenExpiredException $e) {
+            //Token已过期，尝试自动刷新
+            try {
+                $token = $this->auth->refresh();
+                // Auth::guard('api')->onceUsingId($this->auth->manager()->getPayloadFactory()->buildClaimsCollection()->toPlainArray()['sub']);
+                Auth::guard('api')->setToken($token);
 
-        } catch (JWTException $e) {
-            //无Token所以跳过操作
+                return $this->setAuthenticationHeader($next($request), $token);
+            } catch (JWTException $e) {
+                //自动刷新失败，响应401
+                throw new UnauthorizedHttpException('Authorization', $e->getMessage());
+            }
         }
-
-        //取得响应数据
-        $response = $next($request);
-
-        if ($this->shouldRefresh) {
-            $this->refreshJWToken($response);
-        }
-
-        return $response;
-    }
-
-    private function refreshJWToken($response)
-    {
-        //添加新的Token到响应头信息中
-        $response->header('Authorization', auth()->refresh());
     }
 }

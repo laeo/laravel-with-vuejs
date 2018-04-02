@@ -19,7 +19,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::delete('/', 'TokenController@delete')->middleware('auth:api');
     });
 
-    Route::group(['middleware' => 'auth:api', 'prefix' => 'profile'], function () {
-        // Route::get('/');
+    Route::group(['middleware' => 'auth:api'], function () {
+        Route::get('users', 'UserController@index');
     });
 });

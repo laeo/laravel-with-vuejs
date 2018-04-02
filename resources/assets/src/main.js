@@ -18,7 +18,7 @@ new Vue({
   beforeMount () {
     //在此中间件中添加身份认证所需 token。
     api.interceptors.request.use(config => {
-      config.headers['Authorization'] = this.$store.getters.fufilledToken;
+      config.headers['Authorization'] = this.$store.state.auth.token;
       return config;
     });
 
@@ -26,8 +26,7 @@ new Vue({
     api.interceptors.response.use(res => {
       if (res.headers.authorization !== undefined) {
         this.$store.commit('setToken', {
-          accessToken: res.headers.authorization,
-          tokenType: 'Bearer'
+          token: res.headers.authorization,
         });
       }
 

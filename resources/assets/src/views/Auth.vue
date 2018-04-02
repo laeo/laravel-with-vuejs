@@ -27,9 +27,9 @@
     methods: {
       handleSubmit () {
         this.$store
-          .dispatch('create', {email: this.email, password: this.password})
+          .dispatch('authenticate', {email: this.email, password: this.password})
           .then(m => {
-            this.$router.go('/home')
+            this.$router.push('home')
           })
           .catch(e => {
             switch (e.status) {
@@ -38,6 +38,11 @@
                 break
             }
           })
+      }
+    },
+    beforeMount () {
+      if (this.$store.isAuthenticated) {
+        this.$router.push('home');
       }
     }
   }

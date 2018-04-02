@@ -5,14 +5,7 @@ const state = {
 }
 
 const getters = {
-  fulfilledToken (state) {
-    if (state.token === null) {
-      return null;
-    }
-
-    return 'Bearer ' + state.token;
-  },
-  isValidated (state) {
+  isAuthenticated (state) {
     return state.token !== null;
   }
 }
@@ -29,14 +22,14 @@ const mutations = {
 }
 
 const actions = {
-  create ({ commit, dispatch }, credentials) {
+  authenticate ({ commit, dispatch }, credentials) {
     return token.create(credentials).then(m => {
-        commit('setToken', m.data);
+        commit('setToken', m.payload);
 
         return m.message;
     });
   },
-  delete ({ commit }) {
+  invalidate ({ commit }) {
     return token.delete().then(() => {
       commit('clearToken');
     });

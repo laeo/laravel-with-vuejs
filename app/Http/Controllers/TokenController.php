@@ -17,8 +17,10 @@ class TokenController extends Controller
         $credentials = request(['email', 'password']);
 
         if (!$token = auth()->attempt($credentials)) {
-            return $this->respond(null, '账号密码错误', 401);
+            return $this->respond(null, '账号密码错误', 400);
         }
+
+        $token = 'Bearer ' . $token;
 
         return $this->respond(compact('token'));
     }
