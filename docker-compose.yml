@@ -1,10 +1,10 @@
 version: "2"
 services:
   web:
-    image: webstack/php
+    image: composer
     command: php artisan serve --host="0.0.0.0"
     volumes:
-      - .:/home
+      - .:/app
     ports:
       - 8000:8000
     links:

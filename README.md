@@ -4,10 +4,10 @@
 
 ## 依赖项
 
-- docker [dev]
-- docker-compose [dev]
+- docker `dev`
+- docker-compose `dev`
 - Laravel
-- yarn [dev]
+- yarn `dev`
 - VueJS
 - jwt-auth
 - axios
